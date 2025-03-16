@@ -2,6 +2,38 @@ import pkgutil
 import pkg_resources
 from pprint import pprint as pp
 
+def show_methods_of_a_class(cls):
+    """Inspects a class and distinguishes its methods."""
+
+    from pprint import pprint as pp 
+    built_in_methods = []
+    slot_wrappers = []
+    static_methods = []
+    instance_methods = []
+    other_methods=[]
+
+    for name, attr in cls.__dict__.items():
+        if isinstance(attr, staticmethod):
+            static_methods.append(name)
+        elif isinstance(attr, type(str.__add__)): #checks if it is a wrapper descriptor, which slots are
+            slot_wrappers.append(name)
+        elif callable(attr) and not name.startswith('__'): #any callable that is not a special method.
+            instance_methods.append(name)
+        elif callable(attr) and name in dir(dict) and name.startswith('__'):
+            built_in_methods.append(name)
+        else:
+            other_methods.append(name)
+    print(f"Static methods: ")
+    pp(static_methods)
+    print(f"Instance methods: ")
+    pp(instance_methods)
+    print(f"Built-in methods:")
+    pp(built_in_methods)
+    print(f"Slot wrappers: ")
+    pp(slot_wrappers)
+    print(f"Other methods: ")
+    pp(other_methods)
+
 def show_installed_packages(filter=None):
   installed_packages = pkg_resources.working_set
   installed_packages_list = sorted(["%s==%s" % (i.key, i.version)
