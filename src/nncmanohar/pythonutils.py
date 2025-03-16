@@ -1,6 +1,15 @@
 import pkgutil
+import pkg_resources
 from pprint import pprint as pp
 
+def show_installed_packages(filter=None):
+  installed_packages = pkg_resources.working_set
+  installed_packages_list = sorted(["%s==%s" % (i.key, i.version)
+    for i in installed_packages])
+  if filter:
+      installed_packages_list=[package for package in installed_packages_list if filter in package]
+  pp(installed_packages_list)
+  
 def show_sub_packages_and_modules(package_name):
   package = package_name
 
